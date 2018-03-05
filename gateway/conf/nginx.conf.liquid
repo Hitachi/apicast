@@ -5,6 +5,10 @@ env RESOLVER;
 env BACKEND_ENDPOINT_OVERRIDE;
 env OPENSSL_VERIFY;
 
+# TODO: Fix this, conditional
+load_module /opt/app-root/src/nginx-modules/ngx_http_opentracing_module.so;
+load_module /opt/app-root/src/nginx-modules/ngx_http_jaeger_module.so;
+
 daemon {{ daemon | default: 'off' }};
 master_process {{ master_process | default: 'on' }};
 worker_processes {{ worker_processes | default: 'auto' }};
@@ -27,6 +31,8 @@ http {
   sendfile           on;
   tcp_nopush         on;
   tcp_nodelay        on;
+
+
 
   # Enabling the Lua code cache is strongly encouraged for production use
   # Disabling it should only be done for testing and development purposes
@@ -56,6 +62,13 @@ http {
     {%- endfor %}
     }
   {%- endcapture -%}
+
+  #TODO: Extract this to a template
+  jaeger_reporter_local_agent_host_port {{ jaeger_addr }}:{{ jaeger_port }};
+  jaeger_service_name apicast;
+  jaeger_sampler_type const;
+  jaeger_sampler_param 1;
+  opentracing on;
 
   {% for file in "http.d/*.conf" | filesystem %}
     {% include file %}

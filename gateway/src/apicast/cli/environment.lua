@@ -108,7 +108,8 @@ _M.default_config = {
     proxy_ssl_certificate_key = env_value_ref('APICAST_PROXY_HTTPS_CERTIFICATE_KEY'),
     proxy_ssl_session_reuse = env_value_ref('APICAST_PROXY_HTTPS_SESSION_REUSE'),
     proxy_ssl_password_file = env_value_ref('APICAST_PROXY_HTTPS_PASSWORD_FILE'),
-
+    jaeger_addr = env_value_ref('JAEGER_PORT_6831_UDP_ADDR'),
+    jaeger_port = env_value_ref('JAEGER_PORT_6831_UDP_PORT'),
     policy_chain = require('apicast.policy_chain').default(),
     nameservers = parse_nameservers(),
     worker_processes = cpus() or 'auto',
